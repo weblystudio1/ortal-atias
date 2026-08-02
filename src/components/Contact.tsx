@@ -1,7 +1,43 @@
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 export function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Format the message
+    const text = `הודעה חדשה מהאתר:
+שם: ${formData.name}
+טלפון: ${formData.phone}
+אימייל: ${formData.email}
+הודעה: ${formData.message}`;
+
+    // Encode the text for URL
+    const encodedText = encodeURIComponent(text);
+    
+    // WhatsApp URL (using the phone number from the contact info: 052-671-1991 -> 972526711991)
+    const whatsappUrl = `https://wa.me/972526711991?text=${encodedText}`;
+    
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
     <section id="contact" className="bg-stone-50 relative">
       <div className="grid lg:grid-cols-2">
@@ -18,13 +54,17 @@ export function Contact() {
              <p className="text-stone-500 font-light mb-12">
                נשמח לעמוד לשירותכם, אתם מוזמנים להשאיר פרטים ונחזור אליכם בהקדם לתיאום פגישת היכרות.
              </p>
-
-             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+             
+             <form className="space-y-6" onSubmit={handleSubmit}>
                <div className="grid grid-cols-2 gap-6">
                  <div>
                    <label className="block text-sm font-medium text-stone-900 mb-2">שם מלא</label>
                    <input 
                      type="text" 
+                     name="name"
+                     value={formData.name}
+                     onChange={handleChange}
+                     required
                      className="w-full border-b border-stone-300 py-2 bg-transparent focus:outline-none focus:border-gold-500 transition-colors"
                      placeholder="הכנס שם מלא"
                    />
@@ -33,6 +73,10 @@ export function Contact() {
                    <label className="block text-sm font-medium text-stone-900 mb-2">טלפון</label>
                    <input 
                      type="tel" 
+                     name="phone"
+                     value={formData.phone}
+                     onChange={handleChange}
+                     required
                      className="w-full border-b border-stone-300 py-2 bg-transparent focus:outline-none focus:border-gold-500 transition-colors"
                      placeholder="הכנס מספר טלפון"
                    />
@@ -42,6 +86,9 @@ export function Contact() {
                  <label className="block text-sm font-medium text-stone-900 mb-2">אימייל</label>
                  <input 
                    type="email" 
+                   name="email"
+                   value={formData.email}
+                   onChange={handleChange}
                    className="w-full border-b border-stone-300 py-2 bg-transparent focus:outline-none focus:border-gold-500 transition-colors"
                    placeholder="הכנס כתובת אימייל"
                  />
@@ -50,6 +97,10 @@ export function Contact() {
                  <label className="block text-sm font-medium text-stone-900 mb-2">הודעה</label>
                  <textarea 
                    rows={4} 
+                   name="message"
+                   value={formData.message}
+                   onChange={handleChange}
+                   required
                    className="w-full border-b border-stone-300 py-2 bg-transparent focus:outline-none focus:border-gold-500 transition-colors resize-none"
                    placeholder="ספרו לנו קצת על הפרויקט שלכם..."
                  />
@@ -61,6 +112,7 @@ export function Contact() {
                  שלח הודעה
                </button>
              </form>
+
            </motion.div>
         </div>
 
@@ -68,7 +120,7 @@ export function Contact() {
         <div className="bg-stone-900 text-white py-24 px-6 md:px-16 lg:px-24 flex flex-col justify-center relative">
            {/* Abstract architectural lines */}
            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-
+           
            <motion.div
              initial={{ opacity: 0, x: -30 }}
              whileInView={{ opacity: 1, x: 0 }}
@@ -109,7 +161,6 @@ export function Contact() {
                  </div>
                </div>
              </div>
-
            </motion.div>
         </div>
       </div>
